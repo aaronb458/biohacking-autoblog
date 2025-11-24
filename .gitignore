@@ -5,3 +5,5 @@ progress.json
 logs/
 *.log
 .DS_Store
+*.env
+DEPLOYMENT.md
