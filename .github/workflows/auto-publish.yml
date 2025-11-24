@@ -1,0 +1,48 @@
+name: Auto-Publish Blog Posts
+
+on:
+  schedule:
+    # 9am PST = 5pm UTC (PST is UTC-8)
+    - cron: '0 17 * * *'
+    # 4pm PST = 12am UTC next day
+    - cron: '0 0 * * *'
+
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate and Publish Blog Post
+        run: |
+          echo "Triggering blog post generation..."
+
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            https://biohacking-autoblog-production.up.railway.app/generate \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            --max-time 300)
+
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Blog post published successfully!"
+
+            # Extract metrics from response
+            supplement=$(echo "$body" | grep -o '"supplement":"[^"]*"' | cut -d'"' -f4)
+            human_score=$(echo "$body" | grep -o '"humanScore":[0-9]*' | grep -o '[0-9]*')
+            word_count=$(echo "$body" | grep -o '"wordCount":[0-9]*' | grep -o '[0-9]*')
+
+            echo "Supplement: $supplement"
+            echo "Human Score: ${human_score}%"
+            echo "Word Count: $word_count"
+          else
+            echo "❌ Failed to publish blog post"
+            exit 1
+          fi
