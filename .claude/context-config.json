@@ -1,0 +1,48 @@
+{
+  "project_name": "Biohacking Autoblog",
+  "version": "1.0.0",
+  "created": "2025-11-24",
+
+  "auto_mode": {
+    "enabled": true,
+    "auto_load_context": true,
+    "auto_log_changes": true,
+    "auto_update_context": true,
+    "pre_compact_save": true
+  },
+
+  "triggers": {
+    "min_files_changed": 1,
+    "min_conversation_length": 10,
+    "detect_decisions": true,
+    "detect_patterns": true
+  },
+
+  "loading": {
+    "changelog_days": 30,
+    "max_context_tokens": 3000,
+    "summary_mode": false
+  },
+
+  "context_sections": [
+    "overview",
+    "structure",
+    "patterns",
+    "current_state"
+  ],
+
+  "ignore_patterns": [
+    "*.DS_Store",
+    ".git",
+    "node_modules",
+    "*.tmp",
+    "*.log",
+    "test-results-*.json"
+  ],
+
+  "session_tracking": {
+    "enabled": true,
+    "log_directory": ".claude/session-logs",
+    "max_session_logs": 30
+  }
+}
